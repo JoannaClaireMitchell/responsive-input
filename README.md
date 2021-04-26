@@ -1,70 +1,63 @@
-# Getting Started with Create React App
+# useFitText 
+`useFitText` is a React hook which takes arguments for width and content and returns an array of 2 things; a ref to pass as a prop to the React component that you wish to fit the text to, and the fontSize calculated as the maximum fontsize to fit all of the text inside that React Component when displayed all in one line. 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Usage
+`useFitText` is a named export.
+```
+import { useFitText } from './useFitText'
+```
+Call `useFitText` from within a functional component and pass the width and content values to it.
 
-## Available Scripts
+```
+function Component() {
+  ...
+  const [fitTextSize, ref] = useFitText(sliderValue, input, {
+    minFontSize: 1,
+    maxFontSize: 30,
+  })
+```
+Then use the `ref` returned from `useFitText` to target the component you wish to scale the text content inside.
+```
+  <Output ref={ref}>
+    {input}
+  </Output>
+```
+The `fitTextSize` value returned from `useFitText` will be a string containing the fontsize in pixels (`25px`). Use this value to set the style on the ref component.
 
-In the project directory, you can run:
+## Parameters
+`width` is the controlled width of the output. If this changes it will cause the fitText function to re-run to return the new fontSize  
 
-### `npm start`
+`content` is the text content of the ref component.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+`options` is an optional argument where maxFontSize and minFontSize can be passed. If these options are not specified, minFontSize will default to 1 and maxFontSize will be calculated from the height of the ref element.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## CSS
+You should make sure that the React Component you are targeting has the css styles to force text to display on one line only:
+```
+.output{
+  overflow: hidden;
+  white-space: nowrap;
+}
+```
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Nice to haves
+- memoize maximum fontsize based on the height of the container.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# Requirements
+// You need to create a JavaScript solution to make a variable length text fit inside a container with
+// flexible width but fixed height.
+// An HTML page should present a form with a text input and a range slider input.
+// The page must also have a div (let’s call it “output div”) with a 1px visible border and height of
+// 50px (height of this div shouldn’t change under any circumstances).
+// The output div must display the text of the form’s input.
+// When the text is updated the output div’s text should also be updated.
+// The slider should change the width of the output div.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+// The purpose of the solution is to “fit” the input text into the
+// div in one line (no line breaks) within the div height and
+// using the maximum possible integer font-size.
+// The API of the solution should be something similar to fitText(‘element selector’);
+// The form’s text input and range slider position should be persisted between page reloads.
