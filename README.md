@@ -1,22 +1,35 @@
 # useFitText 
-`useFitText` is a React hook which takes arguments for width and content and returns an array of 2 things; a ref to pass as a prop to the React component that you wish to fit the text to, and the fontSize calculated as the maximum fontsize to fit all of the text inside that React Component when displayed all in one line. 
+`useFitText` is a React hook that will calculate the maximum possible font size for one line of text content to be fully visible in its container without wrapping. It takes arguments for width and content and returns an array of 2 things; a ref to attach to the React Component in question, and the maximum calculated font size to fit inside of it. 
+See the [demo in action here](https://usefittext.netlify.app/)
 
 # Usage
 `useFitText` is a named export.
 ```
 import { useFitText } from './useFitText'
 ```
-Call `useFitText` from within a functional component and pass the width and content values to it.
+Call `useFitText` from within a functional component and pass the width and content values to it. The calculation will run each time the width and content change to get a fresh value. If the content is fed from a controlled input field, then you can pass the input value from state here.
 
 ```
 function Component() {
-  ...
-  const [fitTextSize, ref] = useFitText(sliderValue, input, {
+  const [input, setInput] = React.useState('')
+
+  const [fitTextSize, ref] = useFitText(width, input, {
     minFontSize: 1,
     maxFontSize: 30,
   })
+  ...
+  
+  return (
+    <Input
+      id="input"
+      type="text"
+      value={input}
+      onChange={(event) => setInput(event.target.value)}
+    />
+    ...
+   )
 ```
-Then use the `ref` returned from `useFitText` to target the component you wish to scale the text content inside.
+Then use the `ref` returned from `useFitText` to target the component you wish to scale the text content inside. `ref` is a React.useRef that is essential for making the  maximum fontSize calculations.
 ```
   <Output ref={ref}>
     {input}
@@ -32,32 +45,10 @@ The `fitTextSize` value returned from `useFitText` will be a string containing t
 `options` is an optional argument where maxFontSize and minFontSize can be passed. If these options are not specified, minFontSize will default to 1 and maxFontSize will be calculated from the height of the ref element.
 
 ## CSS
-You should make sure that the React Component you are targeting has the css styles to force text to display on one line only:
+You should also make sure that the React Component you are targeting has the css styles to force text to display on one line only:
 ```
 .output{
   overflow: hidden;
   white-space: nowrap;
 }
 ```
-
-
-Nice to haves
-- memoize maximum fontsize based on the height of the container.
-
-
-
-# Requirements
-// You need to create a JavaScript solution to make a variable length text fit inside a container with
-// flexible width but fixed height.
-// An HTML page should present a form with a text input and a range slider input.
-// The page must also have a div (let’s call it “output div”) with a 1px visible border and height of
-// 50px (height of this div shouldn’t change under any circumstances).
-// The output div must display the text of the form’s input.
-// When the text is updated the output div’s text should also be updated.
-// The slider should change the width of the output div.
-
-// The purpose of the solution is to “fit” the input text into the
-// div in one line (no line breaks) within the div height and
-// using the maximum possible integer font-size.
-// The API of the solution should be something similar to fitText(‘element selector’);
-// The form’s text input and range slider position should be persisted between page reloads.
